@@ -1,0 +1,10 @@
+title: "We"
+description: "A private, guild-specific Discord bot that gives every manageable member the same guild nickname."
+theme: jekyll-theme-primer
+lang: en
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
