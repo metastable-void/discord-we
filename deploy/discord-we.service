@@ -1,0 +1,38 @@
+# Example systemd unit for the "We" bot.
+#
+# Install:
+#   install -m 0755 target/x86_64-unknown-linux-musl/release/discord-we /usr/local/bin/discord-we
+#   install -m 0644 deploy/discord-we.service /etc/systemd/system/discord-we.service
+#   install -m 0600 -o discord-we -g discord-we .env /etc/discord-we.env   # from .env.example
+#   useradd --system --home-dir /nonexistent --shell /usr/sbin/nologin discord-we
+#   systemctl daemon-reload && systemctl enable --now discord-we
+
+[Unit]
+Description=We - guild nickname enforcer
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=discord-we
+Group=discord-we
+EnvironmentFile=/etc/discord-we.env
+ExecStart=/usr/local/bin/discord-we
+Restart=on-failure
+RestartSec=10
+
+# The bot only makes outbound HTTPS/WebSocket connections; lock it down.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6
+MemoryDenyWriteExecute=true
+SystemCallFilter=@system-service
+
+[Install]
+WantedBy=multi-user.target
